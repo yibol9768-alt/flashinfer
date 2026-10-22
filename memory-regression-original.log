@@ -1,0 +1,150 @@
+GPU guard: {"temperature_c": 48.0, "power_limit_w": 400.0, "memory_used_mib": 930.31640625, "measured_monotonic": 379097.527026984}
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__________________ test_mm_fp4_autotune_profile_memory[False] __________________
+
+use_8x4_sf_layout = False
+
+    @pytest.mark.parametrize("use_8x4_sf_layout", [False, True])
+    def test_mm_fp4_autotune_profile_memory(use_8x4_sf_layout):
+        config = (
+            _MM_FP4_TUNING_CONFIG_8x4
+            if use_8x4_sf_layout
+            else _MM_FP4_TUNING_CONFIG_128x4
+        )
+        inputs = [
+            torch.empty((1, 64), dtype=torch.uint8, device="cuda"),
+            torch.empty((128, 64), dtype=torch.uint8, device="cuda").T,
+            torch.empty((128, 8), dtype=torch.uint8, device="cuda"),
+            torch.empty((128, 8), dtype=torch.uint8, device="cuda").T,
+            torch.ones((), device="cuda"),
+            torch.bfloat16,
+            torch.empty((1, 128), dtype=torch.bfloat16, device="cuda"),
+            16,
+            True,
+            torch.empty(DEFAULT_WORKSPACE_SIZE, dtype=torch.uint8, device="cuda"),
+        ]
+        tuner = AutoTuner.get()
+        profile = tuner._generate_optimization_profiles(config, inputs)[0]
+        torch.cuda.synchronize()
+        before = torch.cuda.memory_allocated()
+        torch.cuda.reset_peak_memory_stats()
+        prepared = tuner._prepare_input_tensors(profile, inputs)
+        torch.cuda.synchronize()
+        peak_extra = torch.cuda.max_memory_allocated() - before
+        assert prepared[6].shape == inputs[6].shape
+        assert prepared[9].shape == inputs[9].shape
+        # A one-token profile needs one scratch buffer and tiny activations,
+        # without large FP32 intermediates for its output or workspace.
+>       assert peak_extra < 2 * DEFAULT_WORKSPACE_SIZE
+E       assert 335546368 < (2 * 41943040)
+
+../fp4-autotune/main-tests/gemm/test_mm_fp4.py:226: AssertionError
+__________________ test_mm_fp4_autotune_profile_memory[True] ___________________
+
+use_8x4_sf_layout = True
+
+    @pytest.mark.parametrize("use_8x4_sf_layout", [False, True])
+    def test_mm_fp4_autotune_profile_memory(use_8x4_sf_layout):
+        config = (
+            _MM_FP4_TUNING_CONFIG_8x4
+            if use_8x4_sf_layout
+            else _MM_FP4_TUNING_CONFIG_128x4
+        )
+        inputs = [
+            torch.empty((1, 64), dtype=torch.uint8, device="cuda"),
+            torch.empty((128, 64), dtype=torch.uint8, device="cuda").T,
+            torch.empty((128, 8), dtype=torch.uint8, device="cuda"),
+            torch.empty((128, 8), dtype=torch.uint8, device="cuda").T,
+            torch.ones((), device="cuda"),
+            torch.bfloat16,
+            torch.empty((1, 128), dtype=torch.bfloat16, device="cuda"),
+            16,
+            True,
+            torch.empty(DEFAULT_WORKSPACE_SIZE, dtype=torch.uint8, device="cuda"),
+        ]
+        tuner = AutoTuner.get()
+        profile = tuner._generate_optimization_profiles(config, inputs)[0]
+        torch.cuda.synchronize()
+        before = torch.cuda.memory_allocated()
+        torch.cuda.reset_peak_memory_stats()
+        prepared = tuner._prepare_input_tensors(profile, inputs)
+        torch.cuda.synchronize()
+        peak_extra = torch.cuda.max_memory_allocated() - before
+        assert prepared[6].shape == inputs[6].shape
+        assert prepared[9].shape == inputs[9].shape
+        # A one-token profile needs one scratch buffer and tiny activations,
+        # without large FP32 intermediates for its output or workspace.
+>       assert peak_extra < 2 * DEFAULT_WORKSPACE_SIZE
+E       assert 335545856 < (2 * 41943040)
+
+../fp4-autotune/main-tests/gemm/test_mm_fp4.py:226: AssertionError
+=============================== warnings summary ===============================
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/blackwell/blockscaled_contiguous_gather_grouped_gemm_act_fusion.py:3446
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/blackwell/blockscaled_contiguous_gather_grouped_gemm_act_fusion.py:3446: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    c_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/blackwell/moe_w4a16_kernel.py:2326
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/blackwell/moe_w4a16_kernel.py:2326: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    c_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:29
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:29: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    a_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:31
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:31: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    b_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:34
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/utils.py:34: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    c_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/contiguous_grouped_gemm_finalize_fusion.py:903
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/contiguous_grouped_gemm_finalize_fusion.py:903: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    a_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/contiguous_grouped_gemm_finalize_fusion.py:905
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/fused_moe/cute_dsl/hopper/contiguous_grouped_gemm_finalize_fusion.py:905: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    b_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:427
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:427: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    epi_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2391
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_blackwell.py:2391: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    c_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/cute_dsl/low_latency_blockscaled_gemm.py:102
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/cute_dsl/low_latency_blockscaled_gemm.py:102: DeprecationWarning: cutlass.utils.smem_allocator.get_smem_capacity_in_bytes is deprecated; use cutlass.memory.get_smem_capacity_in_bytes instead. It will be removed in a future release.
+    _SMEM_CAPACITY_BYTES = cutlass.utils.get_smem_capacity_in_bytes("sm_100")
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_rubin.py:215
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gemm/kernels/grouped_gemm_masked_rubin.py:215: DeprecationWarning: cutlass.utils.LayoutEnum is deprecated; use cutlass.tensor_utils.LayoutEnum instead. It will be removed in a future release.
+    c_layout: utils.LayoutEnum,
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:95
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:95
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_chunked.py:95: DeprecationWarning: cutlass.utils.TensorMapUpdateMode is deprecated; use cutlass.tensor_utils.TensorMapUpdateMode instead. It will be removed in a future release.
+    from cutlass.utils import TensorMapManager, TensorMapUpdateMode
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/delta_rule_dsl/collective_store_tma.py:6
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/delta_rule_dsl/collective_store_tma.py:6: DeprecationWarning: cutlass.utils.tensormap_manager.TensorMapUpdateMode is deprecated; use cutlass.tensor_utils.TensorMapUpdateMode instead. It will be removed in a future release.
+    from cutlass.utils.tensormap_manager import TensorMapManager, TensorMapUpdateMode
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_cp_prefill.py:55
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_cp_prefill.py:55
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/gdn_kernels/blackwell/gated_delta_net_cp_prefill.py:55: DeprecationWarning: cutlass.utils.TensorMapUpdateMode is deprecated; use cutlass.tensor_utils.TensorMapUpdateMode instead. It will be removed in a future release.
+    from cutlass.utils import TensorMapManager, TensorMapUpdateMode
+
+../envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/cute_dsl/availability.py:136
+  $WORKSPACE/envs/vllm-fp4-032/lib/python3.12/site-packages/flashinfer/cute_dsl/availability.py:136: DeprecationWarning: Arch from arch.py is deprecated. Use Arch from enums.py instead.
+    from cutlass.base_dsl.arch import Arch
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../fp4-autotune/main-tests/gemm/test_mm_fp4.py::test_mm_fp4_autotune_profile_memory[False]
+FAILED ../fp4-autotune/main-tests/gemm/test_mm_fp4.py::test_mm_fp4_autotune_profile_memory[True]
+2 failed, 17 warnings in 2.18s
+GPU guard result: {"max_temperature_c": 48.0, "power_limit_w": 400, "exit_code": 1, "interrupted": null}

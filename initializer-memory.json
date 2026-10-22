@@ -1,0 +1,76 @@
+{
+  "rows": [
+    {
+      "config": "original",
+      "m": 1,
+      "peak_extra_bytes": 335657472,
+      "live_extra_bytes": 42056192,
+      "output_shape": [
+        1,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    },
+    {
+      "config": "original",
+      "m": 256,
+      "peak_extra_bytes": 354107392,
+      "live_extra_bytes": 60506112,
+      "output_shape": [
+        256,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    },
+    {
+      "config": "original",
+      "m": 2048,
+      "peak_extra_bytes": 576323584,
+      "live_extra_bytes": 190447616,
+      "output_shape": [
+        2048,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    },
+    {
+      "config": "empty_output_and_workspace",
+      "m": 1,
+      "peak_extra_bytes": 42056192,
+      "live_extra_bytes": 42056192,
+      "output_shape": [
+        1,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    },
+    {
+      "config": "empty_output_and_workspace",
+      "m": 256,
+      "peak_extra_bytes": 60506112,
+      "live_extra_bytes": 60506112,
+      "output_shape": [
+        256,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    },
+    {
+      "config": "empty_output_and_workspace",
+      "m": 2048,
+      "peak_extra_bytes": 190447616,
+      "live_extra_bytes": 190447616,
+      "output_shape": [
+        2048,
+        34816
+      ],
+      "workspace_bytes": 41943040,
+      "static_weights_reused": true
+    }
+  ]
+}

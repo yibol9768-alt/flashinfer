@@ -1,0 +1,4 @@
+GPU guard: {"temperature_c": 50.0, "power_limit_w": 400.0, "memory_used_mib": 930.31640625, "measured_monotonic": 379295.98621014}
+....                                                                     [100%]
+4 passed, 20 deselected in 0.94s
+GPU guard result: {"max_temperature_c": 51.0, "power_limit_w": 400, "exit_code": 0, "interrupted": null}

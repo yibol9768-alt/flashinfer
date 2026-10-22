@@ -1,0 +1,124 @@
+{
+  "hardware": {
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "versions": {
+      "vllm": "0.32.0",
+      "torch": "2.13.0+cu130",
+      "triton": "3.7.1",
+      "flashinfer-python": "0.7.0.post1",
+      "nvidia-cutlass-dsl": "4.8.0",
+      "transformers": "5.19.0",
+      "numpy": "2.3.5"
+    },
+    "gpu": "NVIDIA GeForce RTX 5090, 591.86, 32607 MiB, 400.00 W"
+  },
+  "model": "unsloth/Qwen3.8-27B-NVFP4",
+  "revision": "16b6615af3548b88e2d8e382457bc705b00479cf",
+  "prompt_reference": "https://github.com/vllm-project/vllm/issues/62820",
+  "common_configuration": {
+    "max_model_len": 32768,
+    "max_num_seqs": 1,
+    "max_num_batched_tokens": 2048,
+    "kv_cache_dtype": "fp8",
+    "mtp_spec_tokens": 3,
+    "skip_mm_profiling": true,
+    "optimization_level": 3,
+    "performance_mode": "interactivity",
+    "cudagraph_mode": "PIECEWISE",
+    "cudagraph_capture_sizes": [
+      1
+    ],
+    "temperature": 0,
+    "seed": 12345,
+    "max_tokens": 2048
+  },
+  "source_validation_scope": "Model and kernel execution used FlashInfer0.7.0.post1 with the same targeted source change in an isolated overlay; full current-main package and other GPU backends were not validated.",
+  "memory_preparation_results_mib": {
+    "m1": {
+      "original": 320.10791015625,
+      "candidate": 40.10791015625
+    },
+    "m2048": {
+      "original": 549.625,
+      "candidate": 181.625
+    }
+  },
+  "model_runs": [
+    {
+      "tag": "original-91-1",
+      "arm": "on",
+      "startup_success": true,
+      "completion_tokens": [
+        777,
+        777
+      ],
+      "code_function_checks_passed": [
+        true,
+        true
+      ],
+      "raw_module_format_passed": [
+        false,
+        false
+      ]
+    },
+    {
+      "tag": "original-92-1",
+      "arm": "on",
+      "startup_success": true,
+      "completion_tokens": [
+        777,
+        777
+      ],
+      "code_function_checks_passed": [
+        true,
+        true
+      ],
+      "raw_module_format_passed": [
+        false,
+        false
+      ]
+    },
+    {
+      "tag": "scratch-patched-91-1",
+      "arm": "on",
+      "startup_success": true,
+      "completion_tokens": [
+        767,
+        767
+      ],
+      "code_function_checks_passed": [
+        true,
+        true
+      ],
+      "raw_module_format_passed": [
+        false,
+        false
+      ]
+    },
+    {
+      "tag": "scratch-patched-92-1",
+      "arm": "on",
+      "startup_success": true,
+      "completion_tokens": [
+        777,
+        777
+      ],
+      "code_function_checks_passed": [
+        true,
+        true
+      ],
+      "raw_module_format_passed": [
+        false,
+        false
+      ]
+    }
+  ],
+  "text_exact_at92": true,
+  "full_model94": "Both versions fail; no general OOM fix or serving-capacity improvement demonstrated.",
+  "notes": [
+    "All raw-format checks fail due outer Markdown fences; extracted code passes functional checks.",
+    "No throughput improvement claimed.",
+    "No checkpoint weights or captured model operands are published."
+  ]
+}
